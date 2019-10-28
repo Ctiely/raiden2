@@ -36,10 +36,10 @@ class DuelDQN(DQN):
     def _build_network(self):
         # s_t
         self.observation = tf.placeholder(
-            tf.uint8, [None, *self.dim_ob_image], name="cur_observation")
+            tf.float32, [None, *self.dim_ob_image], name="cur_observation")
         # s_{t+1}
         self.next_observation = tf.placeholder(
-            tf.uint8, [None, *self.dim_ob_image], name="next_observation")
+            tf.float32, [None, *self.dim_ob_image], name="next_observation")
         # a_t
         self._action = tf.placeholder(dtype=tf.int32, shape=[None], name="action")
         # r_t
@@ -48,8 +48,7 @@ class DuelDQN(DQN):
         self._done = tf.placeholder(dtype=tf.float32, shape=[None], name="done")
         
         def _model(obs): # return value, advantage
-            x = tf.divide(tf.cast(obs, tf.float32), 255.0)
-            x = tf.layers.conv2d(x, 32, 8, 4, activation=tf.nn.relu)
+            x = tf.layers.conv2d(obs, 32, 8, 4, activation=tf.nn.relu)
             x = tf.layers.conv2d(x, 64, 4, 2, activation=tf.nn.relu)
             x = tf.layers.conv2d(x, 64, 3, 1, activation=tf.nn.relu)
             x = tf.contrib.layers.flatten(x)

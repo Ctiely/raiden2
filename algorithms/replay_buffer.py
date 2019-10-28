@@ -16,8 +16,7 @@ class ReplayBuffer(object):
         self.len = 0
         self._max_size = max_size
     
-    def add(self, trajs):
-        s_batch, a_batch, r_batch, d_batch = trajs
+    def add(self, s_batch, a_batch, r_batch, d_batch):
         for states, actions, rewards, dones in zip(s_batch, a_batch, r_batch, d_batch):
             len_traj = len(dones)
             self.len += len_traj
