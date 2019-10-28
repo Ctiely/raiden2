@@ -40,3 +40,4 @@ class ReplayBuffer(object):
 
     def __len__(self):
         return self.len
+
