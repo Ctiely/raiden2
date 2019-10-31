@@ -19,7 +19,7 @@ if __name__ == "__main__":
     action_space = 16
     state_space = (84, 84, 4)
     
-    memory = ReplayBuffer(max_size=500000)
+    memory = ReplayBuffer(max_size=250000)
     env = Raiden2(6666, num_envs=8, with_stack=True)
     env_ids, states, rewards, dones = env.start()
     print("pre-train: ")
