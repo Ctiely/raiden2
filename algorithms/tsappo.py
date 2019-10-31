@@ -25,7 +25,6 @@ class TSAPPO(BasicPPO):
                  lr_schedule=lambda x: max(0.05, (1 - x)) * 2.5e-4,
                  clip_schedule=lambda x: max(0.2, (1 - x)) * 0.5,
                  save_path="./tsappo_log"):
-        
         super().__init__(
                 n_action=n_action,
                 dim_ob_image=dim_ob_image,
