@@ -87,7 +87,7 @@ if __name__ == '__main__':
                 x, 1, kernel_initializer=tf.truncated_normal_initializer()))
         return logit_action_probability, state_value
     
-    ppo = PPO(action_space, obs_fn, model_fn, train_epoch=5, batch_size=64, save_path='./raiden2_model')
+    ppo = PPO(action_space, obs_fn, model_fn, temperature=0.1, train_epoch=5, batch_size=64, save_path='./raiden2_model')
     
     env = Raiden2()
     env_ids, states, rewards, dones = env.start()
