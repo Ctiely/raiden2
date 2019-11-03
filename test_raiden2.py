@@ -66,12 +66,14 @@ if __name__ == '__main__':
     flags = tf.app.flags
     FLAGS = flags.FLAGS
     
+    flags.DEFINE_float('temperature', 1.0, 'random rate')
     flags.DEFINE_integer('frame_stack', 4, 'number of frame')
     flags.DEFINE_string('algorithm', 'basic_ppo', 'ppo algorithm')
     flags.DEFINE_string('save_path', 'basic_ppo_log', 'save path')
     
     algorithm = FLAGS.algorithm
     save_path = FLAGS.save_path
+    temperature = FLAGS.temperature
     
     action_space = 4
     frame_stack = FLAGS.frame_stack
@@ -80,12 +82,15 @@ if __name__ == '__main__':
     
     if algorithm == 'tsarppo':
         ppo = TSARPPO(action_space, state_space,
+                      temperature=temperature,
                       save_path=save_path)
     elif algorithm == 'tsappo':
         ppo = TSAPPO(action_space, state_space,
+                     temperature=temperature,
                      save_path=save_path)
     else:
         ppo = BasicPPO(action_space, state_space,
+                       temperature=temperature,
                        save_path=save_path)
     
     env = Raiden2(num_frames=frame_stack)
