@@ -44,7 +44,7 @@ class Base(ABC):
 
     def _prepare(self):
         # ------------------------ Initialize saver. ------------------------
-        self.saver = tf.train.Saver(max_to_keep=5)
+        self.saver = tf.train.Saver(max_to_keep=20)
 
         # ------------------------ Initialize Session. ------------------------
         conf = tf.ConfigProto(allow_soft_placement=True)
