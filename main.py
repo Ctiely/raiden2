@@ -11,9 +11,9 @@ import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
 
-from algorithm.basic_ppo import BasicPPO
-from algorithm.tsarppo import TSARPPO
-from algorithm.tsappo import TSAPPO
+from algorithms.basic_ppo import BasicPPO
+from algorithms.tsarppo import TSARPPO
+from algorithms.tsappo import TSAPPO
 from utils.logger import Logger
 from raiden2 import Raiden2
 
