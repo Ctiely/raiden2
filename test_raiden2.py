@@ -59,43 +59,42 @@ if __name__ == '__main__':
     import tensorflow as tf
     
     from tqdm import tqdm
-    from algorithms.ppo import PPO
+    from algorithms.basic_ppo import BasicPPO
+    from algorithms.tsarppo import TSARPPO
+    from algorithms.tsappo import TSAPPO
     
-    explore_steps = 1024
-    total_updates = 1000
-    save_model_freq = 30
+    flags = tf.app.flags
+    FLAGS = flags.FLAGS
+    
+    flags.DEFINE_integer('frame_stack', 4, 'number of frame')
+    flags.DEFINE_string('algorithm', 'basic_ppo', 'ppo algorithm')
+    flags.DEFINE_string('save_path', 'basic_ppo_log', 'save path')
+    
+    algorithm = FLAGS.algorithm
+    save_path = FLAGS.save_path
+    
     action_space = 4
-    frame_stack = 4
+    frame_stack = FLAGS.frame_stack
     size = 84
     state_space = (size, size, frame_stack)
     
-    def obs_fn():
-        obs = tf.placeholder(shape=[None, *state_space], dtype=tf.float32, name="image_observation")
-        return obs
+    if algorithm == 'tsarppo':
+        ppo = TSARPPO(action_space, state_space,
+                      save_path=save_path)
+    elif algorithm == 'tsappo':
+        ppo = TSAPPO(action_space, state_space,
+                     save_path=save_path)
+    else:
+        ppo = BasicPPO(action_space, state_space,
+                       save_path=save_path)
     
-    def model_fn(obs):
-        x = tf.layers.conv2d(obs, 32, 8, 4, activation=tf.nn.relu)
-        x = tf.layers.conv2d(x, 64, 4, 2, activation=tf.nn.relu)
-        x = tf.layers.conv2d(x, 64, 3, 1, activation=tf.nn.relu)
-        x = tf.contrib.layers.flatten(x)
-        x = tf.layers.dense(x, 512, activation=tf.nn.relu)
-    
-        logit_action_probability = tf.layers.dense(
-                x, action_space,
-                kernel_initializer=tf.truncated_normal_initializer(0.0, 0.01))
-        state_value = tf.squeeze(tf.layers.dense(
-                x, 1, kernel_initializer=tf.truncated_normal_initializer()))
-        return logit_action_probability, state_value
-    
-    ppo = PPO(action_space, obs_fn, model_fn, temperature=0.1, train_epoch=5, batch_size=64, save_path='./raiden2_model')
-    
-    env = Raiden2()
+    env = Raiden2(num_frames=frame_stack)
     env_ids, states, rewards, dones = env.start()
     
     nth_trajectory = 0
     while True:
         nth_trajectory += 1
-        for _ in tqdm(range(explore_steps)):
+        for _ in tqdm(range(1024)):
             actions = ppo.get_action(np.asarray(states))
             actions = [(action, 4) for action in actions]
             env_ids, states, rewards, dones = env.step(env_ids, actions)
