@@ -26,8 +26,6 @@ flags.DEFINE_integer('total_updates', 1000, 'number of updates')
 flags.DEFINE_integer('frame_stack', 4, 'number of frame')
 flags.DEFINE_integer('batch_size', 32, 'batch size')
 flags.DEFINE_string('algorithm', 'basic_ppo', 'ppo algorithm')
-flags.DEFINE_string('log_file', f'{FLAGS.algorithm}.log', 'log file')
-flags.DEFINE_string('save_path', f'{FLAGS.algorithm}_log', 'save path')
 
 
 def main(_):
@@ -36,9 +34,9 @@ def main(_):
     frame_stack = FLAGS.frame_stack
     batch_size = FLAGS.batch_size
     algorithm = FLAGS.algorithm
-    log_file = FLAGS.log_file
-    save_path = FLAGS.save_path
     
+    log_file = f'{algorithm}.log'
+    save_path = f'{algorithm}_log'
     save_model_freq = 30
     action_space = 4
     size = 84
@@ -47,7 +45,7 @@ def main(_):
     
     logger = Logger(log_file, level='info')
     
-    env = Raiden2(6666, num_envs=8, with_stack=True)
+    env = Raiden2(6666, num_envs=8, with_stack=True, num_frames=frame_stack)
     env_ids, states, rewards, dones = env.start()
     time.sleep(5)
     
