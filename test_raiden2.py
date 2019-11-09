@@ -59,9 +59,6 @@ if __name__ == '__main__':
     import tensorflow as tf
     
     from tqdm import tqdm
-    from algorithms.basic_ppo import BasicPPO
-    from algorithms.tsarppo import TSARPPO
-    from algorithms.tsappo import TSAPPO
     
     flags = tf.app.flags
     FLAGS = flags.FLAGS
@@ -81,14 +78,22 @@ if __name__ == '__main__':
     state_space = (size, size, frame_stack)
     
     if algorithm == 'tsarppo':
+        from algorithms.tsarppo import TSARPPO
         ppo = TSARPPO(action_space, state_space,
                       temperature=temperature,
                       save_path=save_path)
     elif algorithm == 'tsappo':
+        from algorithms.tsappo import TSAPPO
         ppo = TSAPPO(action_space, state_space,
                      temperature=temperature,
                      save_path=save_path)
+    elif algorithm == 'sappo':
+        from algorithms.sappo import SAPPO
+        ppo = SAPPO(action_space, state_space,
+                    temperature=temperature,
+                    save_path=save_path)
     else:
+        from algorithms.basic_ppo import BasicPPO
         ppo = BasicPPO(action_space, state_space,
                        temperature=temperature,
                        save_path=save_path)
