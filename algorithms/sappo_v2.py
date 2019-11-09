@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Nov  9 19:23:36 2019
+Created on Sat Nov  9 22:40:52 2019
 
 @author: clytie
 """
@@ -10,7 +10,7 @@ import tensorflow as tf
 from algorithms.basic_ppo import BasicPPO
 
 
-class SAPPO(BasicPPO):
+class SAPPOV2(BasicPPO):
     def __init__(self,
                  n_action, dim_ob_image,
                  rnd=1,
@@ -24,7 +24,7 @@ class SAPPO(BasicPPO):
                  batch_size=64,
                  lr_schedule=lambda x: max(0.05, (1 - x)) * 2.5e-4,
                  clip_schedule=lambda x: max(0.2, (1 - x)) * 0.5,
-                 save_path="./sappo_log"):
+                 save_path="./sappov2_log"):
         super().__init__(
                 n_action=n_action,
                 dim_ob_image=dim_ob_image,
@@ -47,13 +47,13 @@ class SAPPO(BasicPPO):
             tf.float32, [None, *self.dim_ob_image], name="image_observation")
         batch_size = tf.shape(self.ob_image)[0]
         
-        self.conv1 = tf.layers.conv2d(self.ob_image, 32, 8, 4, activation=tf.nn.relu)
-        self.conv2 = tf.layers.conv2d(self.conv1, 64, 4, 2, activation=tf.nn.relu)
-        self.conv3 = tf.layers.conv2d(self.conv2, 64, 3, 1, activation=tf.nn.relu)
+        self.conv1 = tf.layers.conv2d(self.ob_image, 256, 8, 4, activation=tf.nn.relu)
+        self.conv2 = tf.layers.conv2d(self.conv1, 512, 4, 2, activation=tf.nn.relu)
+        self.conv3 = tf.layers.conv2d(self.conv2, 512, 3, 1, activation=tf.nn.relu)
         
         # spatial part
         L = 7 * 7
-        D = 64
+        D = 512
         
         def _project_features(feature, D, L):
             with tf.variable_scope('project_features'):
@@ -78,7 +78,7 @@ class SAPPO(BasicPPO):
                 h_att = tf.nn.relu(feature_project + b)
                 out_att = tf.reshape(tf.matmul(tf.reshape(h_att, [-1, D]), w), [-1, L])
                 alpha = tf.nn.softmax(out_att)
-                context = feature * tf.expand_dims(alpha + 1, 2)
+                context = tf.reduce_sum(feature * tf.expand_dims(alpha, 2), 1)
                 return context, alpha
         
         # Spatial Attention: The Generalization of Global Average Pooling
@@ -94,8 +94,7 @@ class SAPPO(BasicPPO):
             self.spatial_alpha = alpha
             self.spatial_attention = context
         
-        inputs = tf.contrib.layers.flatten(self.spatial_attention)
-        inputs = tf.layers.dense(inputs, 512, activation=tf.nn.relu)
+        inputs = tf.nn.relu(self.spatial_attention)
         self.logit_action_probability = tf.layers.dense(
             inputs, self.n_action,
             kernel_initializer=tf.truncated_normal_initializer(0.0, 0.01)

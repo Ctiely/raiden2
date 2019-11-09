@@ -66,6 +66,12 @@ def main(_):
                     train_epoch=5,
                     batch_size=batch_size,
                     save_path=save_path)
+    elif algorithm == 'sappov2':
+        from algorithms.sappo_v2 import SAPPOV2
+        ppo = SAPPOV2(action_space, state_space,
+                      train_epoch=5,
+                      batch_size=batch_size,
+                      save_path=save_path)
     else:
         from algorithms.basic_ppo import BasicPPO
         ppo = BasicPPO(action_space, state_space,

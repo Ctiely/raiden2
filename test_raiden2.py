@@ -92,6 +92,11 @@ if __name__ == '__main__':
         ppo = SAPPO(action_space, state_space,
                     temperature=temperature,
                     save_path=save_path)
+    elif algorithm == 'sappov2':
+        from algorithms.sappo_v2 import SAPPOV2
+        ppo = SAPPOV2(action_space, state_space,
+                      temperature=temperature,
+                      save_path=save_path)
     else:
         from algorithms.basic_ppo import BasicPPO
         ppo = BasicPPO(action_space, state_space,

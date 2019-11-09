@@ -71,7 +71,7 @@ class TSAPPO(BasicPPO):
                 feature_project = tf.reshape(feature_project, [-1, L, D])
                 return feature_project
             
-        def _spatial_attention(feature, feature_project, H, D, L, reuse):
+        def _spatial_attention(feature, feature_project, D, L, reuse):
             with tf.variable_scope('spatial_attention', reuse=reuse):
                 w = tf.get_variable(
                         'w', [D, 1],
@@ -101,7 +101,6 @@ class TSAPPO(BasicPPO):
                                                     reuse=reuse)
                 context, alpha = _spatial_attention(feature=feature,
                                                     feature_project=feature_project,
-                                                    H=self.H,
                                                     D=self.D,
                                                     L=self.L,
                                                     reuse=reuse)
