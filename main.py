@@ -11,9 +11,6 @@ import numpy as np
 import tensorflow as tf
 from tqdm import tqdm
 
-from algorithms.basic_ppo import BasicPPO
-from algorithms.tsarppo import TSARPPO
-from algorithms.tsappo import TSAPPO
 from utils.logger import Logger
 from raiden2 import Raiden2
 
@@ -52,16 +49,25 @@ def main(_):
     logger.logger.info(f'action_space={action_space}, state_space={state_space}')
     logger.logger.info(', '.join([f'{flag}={FLAGS.flag_values_dict()[flag]}' for flag in FLAGS.flag_values_dict()]))
     if algorithm == 'tsarppo':
+        from algorithms.tsarppo import TSARPPO
         ppo = TSARPPO(action_space, state_space,
                       train_epoch=5,
                       batch_size=batch_size,
                       save_path=save_path)
     elif algorithm == 'tsappo':
+        from algorithms.tsappo import TSAPPO
         ppo = TSAPPO(action_space, state_space,
                      train_epoch=5,
                      batch_size=batch_size,
                      save_path=save_path)
+    elif algorithm == 'sappo':
+        from algorithms.sappo import SAPPO
+        ppo = SAPPO(action_space, state_space,
+                    train_epoch=5,
+                    batch_size=batch_size,
+                    save_path=save_path)
     else:
+        from algorithms.basic_ppo import BasicPPO
         ppo = BasicPPO(action_space, state_space,
                        train_epoch=5,
                        batch_size=batch_size,

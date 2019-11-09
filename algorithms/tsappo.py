@@ -80,7 +80,7 @@ class TSAPPO(BasicPPO):
                 b = tf.get_variable(
                         'b', [D], initializer=tf.constant_initializer(0.0))
     
-                h_att = tf.nn.tanh(feature_project + b)
+                h_att = tf.nn.relu(feature_project + b)
                 out_att = tf.reshape(tf.matmul(tf.reshape(h_att, [-1, D]), w), [-1, L])
                 alpha = tf.nn.softmax(out_att)
                 context = tf.reduce_sum(feature * tf.expand_dims(alpha, 2), 1, name='context')
