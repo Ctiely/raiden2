@@ -23,6 +23,8 @@ flags.DEFINE_integer('total_updates', 1000, 'number of updates')
 flags.DEFINE_integer('frame_stack', 4, 'number of frame')
 flags.DEFINE_integer('batch_size', 32, 'batch size')
 flags.DEFINE_string('algorithm', 'basic_ppo', 'ppo algorithm')
+flags.DEFINE_float('temperature', 1.0, 'random ratio')
+flags.DEFINE_integer('train_epoch', 5, 'number of train epoch')
 
 
 def main(_):
@@ -31,6 +33,8 @@ def main(_):
     frame_stack = FLAGS.frame_stack
     batch_size = FLAGS.batch_size
     algorithm = FLAGS.algorithm
+    temperature = FLAGS.temperature
+    train_epoch = FLAGS.train_epoch
     
     log_file = f'{algorithm}.log'
     save_path = f'{algorithm}_log'
@@ -51,31 +55,36 @@ def main(_):
     if algorithm == 'tsarppo':
         from algorithms.tsarppo import TSARPPO
         ppo = TSARPPO(action_space, state_space,
-                      train_epoch=5,
+                      train_epoch=train_epoch,
+                      temperature=temperature,
                       batch_size=batch_size,
                       save_path=save_path)
     elif algorithm == 'tsappo':
         from algorithms.tsappo import TSAPPO
         ppo = TSAPPO(action_space, state_space,
-                     train_epoch=5,
+                     train_epoch=train_epoch,
+                     temperature=temperature,
                      batch_size=batch_size,
                      save_path=save_path)
     elif algorithm == 'sappo':
         from algorithms.sappo import SAPPO
         ppo = SAPPO(action_space, state_space,
-                    train_epoch=5,
+                    train_epoch=train_epoch,
+                    temperature=temperature,
                     batch_size=batch_size,
                     save_path=save_path)
     elif algorithm == 'sappov2':
         from algorithms.sappo_v2 import SAPPOV2
         ppo = SAPPOV2(action_space, state_space,
-                      train_epoch=5,
+                      train_epoch=train_epoch,
+                      temperature=temperature,
                       batch_size=batch_size,
                       save_path=save_path)
     else:
         from algorithms.basic_ppo import BasicPPO
         ppo = BasicPPO(action_space, state_space,
-                       train_epoch=5,
+                       train_epoch=train_epoch,
+                       temperature=temperature,
                        batch_size=batch_size,
                        save_path=save_path)
     
