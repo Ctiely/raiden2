@@ -129,12 +129,15 @@ def main(_):
         logger.logger.info(
             f'>>>>{env.mean_reward}, nth_trajectory{nth_trajectory}')
         
-        ppo.update(s_batchs, a_batchs, r_batchs, d_batchs,
-                       min(0.9, nth_trajectory / total_updates))
+        ppo.update(
+            s_batchs, a_batchs, r_batchs, d_batchs,
+            min(0.9, nth_trajectory / total_updates)
+            )
         ppo.sw.add_scalar(
-                    'reward_mean',
-                    env.mean_reward,
-                    global_step=nth_trajectory)
+            'reward_mean',
+            env.mean_reward,
+            global_step=nth_trajectory
+            )
 
         if nth_trajectory % save_model_freq == 0:
             ppo.save_model()
@@ -144,4 +147,3 @@ def main(_):
 if __name__ == '__main__':
     tf.app.run()
 
-    
