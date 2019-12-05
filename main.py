@@ -25,6 +25,8 @@ flags.DEFINE_integer('batch_size', 32, 'batch size')
 flags.DEFINE_string('algorithm', 'basic_ppo', 'ppo algorithm')
 flags.DEFINE_float('temperature', 1.0, 'random ratio')
 flags.DEFINE_integer('train_epoch', 5, 'number of train epoch')
+flags.DEFINE_float('entropy_coef', 0.01, 'entropy coefficent')
+flags.DEFINE_integer('action_space', 4, 'action space')
 
 
 def main(_):
@@ -35,11 +37,12 @@ def main(_):
     algorithm = FLAGS.algorithm
     temperature = FLAGS.temperature
     train_epoch = FLAGS.train_epoch
+    entropy_coef = FLAGS.entropy_coef
     
     log_file = f'{algorithm}.log'
     save_path = f'{algorithm}_log'
     save_model_freq = 30
-    action_space = 4
+    action_space = FLAGS.action_space
     size = 84
     death_frame = 29
     state_space = (size, size, frame_stack)
@@ -58,6 +61,7 @@ def main(_):
                       train_epoch=train_epoch,
                       temperature=temperature,
                       batch_size=batch_size,
+                      entropy_coef=entropy_coef,
                       save_path=save_path)
     elif algorithm == 'tsappo':
         from algorithms.tsappo import TSAPPO
@@ -65,6 +69,7 @@ def main(_):
                      train_epoch=train_epoch,
                      temperature=temperature,
                      batch_size=batch_size,
+                     entropy_coef=entropy_coef,
                      save_path=save_path)
     elif algorithm == 'sappo':
         from algorithms.sappo import SAPPO
@@ -72,6 +77,7 @@ def main(_):
                     train_epoch=train_epoch,
                     temperature=temperature,
                     batch_size=batch_size,
+                    entropy_coef=entropy_coef,
                     save_path=save_path)
     elif algorithm == 'sappov2':
         from algorithms.sappo_v2 import SAPPOV2
@@ -79,6 +85,7 @@ def main(_):
                       train_epoch=train_epoch,
                       temperature=temperature,
                       batch_size=batch_size,
+                      entropy_coef=entropy_coef,
                       save_path=save_path)
     else:
         from algorithms.basic_ppo import BasicPPO
@@ -86,6 +93,7 @@ def main(_):
                        train_epoch=train_epoch,
                        temperature=temperature,
                        batch_size=batch_size,
+                       entropy_coef=entropy_coef,
                        save_path=save_path)
     
     nth_trajectory = 0
